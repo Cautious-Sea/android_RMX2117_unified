@@ -187,9 +187,9 @@ static inline bool selinux_android_nlroute_getlink(void)
 
 static inline bool selinux_android_nlroute_getneigh(void)
 {
-       struct selinux_state *state = &selinux_state;
+	struct selinux_state *state = &selinux_state;
 
-       return state->android_netlink_getneigh;
+	return state->android_netlink_getneigh;
 }
 
 int security_mls_enabled(struct selinux_state *state);
