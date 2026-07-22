@@ -66,7 +66,7 @@ get_compat_pointer(struct kbase_context *kctx, const u64 p)
 	if (kbase_ctx_flag(kctx, KCTX_COMPAT))
 		return compat_ptr(p);
 #endif
-	return u64_to_user_ptr(p);
+	return (void __user *)(uintptr_t)p;
 }
 
 /* Mark an atom as complete, and trace it in kinstr_jm */

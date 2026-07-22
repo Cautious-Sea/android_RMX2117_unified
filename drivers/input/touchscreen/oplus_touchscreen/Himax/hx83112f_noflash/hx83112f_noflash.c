@@ -1589,7 +1589,7 @@ int hx83112f_check_remapping(void)
     return reload_status;
 }
 
-static void hx83112f_read_FW_ver()
+static void hx83112f_read_FW_ver(void)
 {
     uint8_t cmd[4];
     uint8_t data[64];
