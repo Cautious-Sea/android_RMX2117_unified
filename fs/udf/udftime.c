@@ -41,7 +41,7 @@
 #include <linux/time.h>
 
 void
-udf_disk_stamp_to_time(struct timespec *dest, struct timestamp src)
+udf_disk_stamp_to_time(struct timespec64 *dest, struct timestamp src)
 {
 	u16 typeAndTimezone = le16_to_cpu(src.typeAndTimezone);
 	u16 year = le16_to_cpu(src.year);
@@ -65,19 +65,13 @@ udf_disk_stamp_to_time(struct timespec *dest, struct timestamp src)
 	 * Sanitize nanosecond field since reportedly some filesystems are
 	 * recorded with bogus sub-second values.
 	 */
-	if (src.centiseconds < 100 && src.hundredsOfMicroseconds < 100 &&
-	    src.microseconds < 100) {
-		dest->tv_nsec = 1000 * (src.centiseconds * 10000 +
-			src.hundredsOfMicroseconds * 100 + src.microseconds);
-	} else {
-		dest->tv_nsec = 0;
-	}
+	dest->tv_nsec %= NSEC_PER_SEC;
 }
 
 void
-udf_time_to_disk_stamp(struct timestamp *dest, struct timespec ts)
+udf_time_to_disk_stamp(struct timestamp *dest, struct timespec64 ts)
 {
-	long seconds;
+	time64_t seconds;
 	int16_t offset;
 	struct tm tm;
 
