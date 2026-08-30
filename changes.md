@@ -148,3 +148,30 @@ index 875704d..253579e 100644
      mediatek-common \
      mediatek-framework \
 ```
+Error/Change (No): 4
+What is the Error: Missing product packages for oplus and mediatek.
+The Fix: Added sensors.oplus to PRODUCT_PACKAGES and inherited hardware/mediatek/frameworks/mediatek-frameworks.mk in device.mk.
+```diff
+diff --git a/device.mk b/device.mk
+index 253579e..b9030b7 100644
+--- a/device.mk
++++ b/device.mk
+@@ -58,6 +58,10 @@ PRODUCT_PACKAGES += \
+     init.mt6853.rc \
+     fstab.mt6853
+ 
++# Sensors
++PRODUCT_PACKAGES += \
++    sensors.oplus
++
+ # Overlays
+ DEVICE_PACKAGE_OVERLAYS += \
+     $(DEVICE_PATH)/overlay
+@@ -131,3 +135,6 @@ PRODUCT_BOOT_JARS += \
+ # MTK
+ PRODUCT_PACKAGES += \
+     MtkInCallService
++
++# Mediatek frameworks
++$(call inherit-product, hardware/mediatek/frameworks/mediatek-frameworks.mk)
+```
