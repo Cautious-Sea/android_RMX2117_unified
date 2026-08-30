@@ -1,2 +1,7 @@
 soong_namespace {
+    imports: [
+        "hardware/oplus",
+        "hardware/mediatek",
+        "vendor/mediatek/ims",
+    ],
 }
