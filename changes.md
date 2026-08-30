@@ -971,3 +971,11 @@ index 4a9a24a1f355..47b7d4c3c0a0 100644
      mediatek-gwsd \
      mediatek-gwsdv2 \
 ```
+
+
+Error/Change (No): 14
+What is the Error: `ccache` failed to run during compilation with the error `ccache: error: Not a directory`.
+The Fix: Removed the invalid `~/.cache/ccache` regular file and created the correct directory structure so `ccache` can properly store and access cache files.
+```diff
+# No code diff, as this was a filesystem fix: rm ~/.cache/ccache && mkdir -p ~/.cache/ccache
+```
