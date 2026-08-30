@@ -194,3 +194,292 @@ index 3df72f5..ad5cb3f 100644
 -    lineage_RMX2117-eng
 +    lineage_RMX2117-bp4a-eng
 ```
+Error/Change (No): 6
+What is the Error: module "MtkInCallService" variant "android_common": found in multiple namespaces(device/realme/RMX2117 and hardware/mediatek) when including in system partition
+The Fix: Removed duplicate MtkInCallService from device/realme/RMX2117/app/InCallService since LineageOS has moved it to the common hardware/mediatek repository.
+```diff
+diff --git a/app/InCallService/Android.bp b/app/InCallService/Android.bp
+deleted file mode 100644
+index 649bdc0009cd..000000000000
+--- a/app/InCallService/Android.bp
++++ /dev/null
+@@ -1,31 +0,0 @@
+-/*
+- * Copyright (C) 2022 bengris32
+- * Copyright (C) 2022 LineageOS
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-android_app {
+-    name: "MtkInCallService",
+-
+-    srcs: ["src/**/*.java"],
+-    resource_dirs: ["res"],
+-
+-    certificate: "platform",
+-    platform_apis: true,
+-    privileged: true,
+-
+-    optimize: {
+-        enabled: false,
+-    }
+-}
+diff --git a/app/InCallService/AndroidManifest.xml b/app/InCallService/AndroidManifest.xml
+deleted file mode 100644
+index cb5c2bc4040f..000000000000
+--- a/app/InCallService/AndroidManifest.xml
++++ /dev/null
+@@ -1,25 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="org.lineageos.mediatek.incallservice"
+-    android:versionCode="1"
+-    android:versionName="1.0"
+-    android:sharedUserId="android.uid.system">
+-
+-    <application
+-        android:label="@string/app_name"
+-        android:persistent="true">
+-        <receiver
+-            android:directBootAware="true"
+-            android:exported="true"    
+-            android:name="org.lineageos.mediatek.incallservice.OnLockedBootCompleteReceiver">
+-            <intent-filter>
+-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+-                <category android:name="android.intent.category.DEFAULT" />
+-            </intent-filter>
+-        </receiver>
+-        <service
+-            android:directBootAware="true"
+-            android:name="org.lineageos.mediatek.incallservice.VolumeChangeService">
+-        </service>
+-    </application>
+-</manifest>
+diff --git a/app/InCallService/res/values/strings.xml b/app/InCallService/res/values/strings.xml
+deleted file mode 100644
+index 2be002f1d017..000000000000
+--- a/app/InCallService/res/values/strings.xml
++++ /dev/null
+@@ -1,4 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <string name="app_name">Mediatek In-Call Service</string>
+-</resources>
+diff --git a/app/InCallService/src/org/lineageos/mediatek/incallservice/CallStateListener.java b/app/InCallService/src/org/lineageos/mediatek/incallservice/CallStateListener.java
+deleted file mode 100644
+index 5c42a91940ef..000000000000
+--- a/app/InCallService/src/org/lineageos/mediatek/incallservice/CallStateListener.java
++++ /dev/null
+@@ -1,31 +0,0 @@
+-/*
+- * Copyright (C) 2023 The LineageOS Project
+- *
+- * SPDX-License-Identifier: Apache-2.0
+- */
+-
+-package org.lineageos.mediatek.incallservice;
+-
+-import android.media.AudioManager;
+-
+-import android.telephony.TelephonyManager;
+-import android.telephony.TelephonyCallback;
+-
+-import android.util.Log;
+-
+-public class CallStateListener extends TelephonyCallback implements TelephonyCallback.CallStateListener {
+-    private static final String LOG_TAG = "MtkInCallService";
+-    private AudioManager mAudioManager;
+-
+-    public CallStateListener(AudioManager audioManager) {
+-        mAudioManager = audioManager;
+-    }
+-
+-    @Override
+-    public void onCallStateChanged(int state) {
+-        if (state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_RINGING) {
+-            Log.d(LOG_TAG, "CallStateListener: CALL_STATE_OFFHOOK, setting gain.");
+-            GainUtils.setGainLevel(mAudioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL));
+-        }
+-    }
+-}
+diff --git a/app/InCallService/src/org/lineageos/mediatek/incallservice/GainUtils.java b/app/InCallService/src/org/lineageos/mediatek/incallservice/GainUtils.java
+deleted file mode 100644
+index 482717476019..000000000000
+--- a/app/InCallService/src/org/lineageos/mediatek/incallservice/GainUtils.java
++++ /dev/null
+@@ -1,31 +0,0 @@
+-package org.lineageos.mediatek.incallservice;
+-
+-import android.media.AudioDeviceInfo;
+-import android.os.SystemProperties;
+-import android.media.AudioSystem;
+-import android.util.Log;
+-
+-public class GainUtils {
+-    public static final String LOG_TAG = "MediatekInCallService";
+-
+-    public static void setGainLevel(int audioDevice, int gainIndex, int streamType) {
+-        int maxStep = SystemProperties.getInt("ro.config.vc_call_vol_steps", 7);
+-        String parameters = String.format("volumeDevice=%d;volumeIndex=%d;volumeStreamType=%d",
+-                                          audioDevice, 
+-                                          Math.round(
+-                                            (15.0 / Math.log(maxStep + 1.0))
+-                                            * Math.log(Math.min(maxStep, gainIndex) + 1.0)),
+-                                          streamType);
+-        Log.d(LOG_TAG, "Setting audio parameters to: " + parameters);
+-        AudioSystem.setParameters(parameters);
+-    }
+-
+-    /**
+-     * Sets the gain level for built-in earpiece and bluetooth SCO devices.
+-     * @param gainIndex The gain level to set.
+-     */
+-    public static void setGainLevel(int gainIndex) {
+-        GainUtils.setGainLevel(AudioDeviceInfo.TYPE_BUILTIN_EARPIECE, gainIndex, AudioSystem.STREAM_VOICE_CALL);
+-        GainUtils.setGainLevel(AudioDeviceInfo.TYPE_BLUETOOTH_SCO, gainIndex, AudioSystem.STREAM_VOICE_CALL);
+-    }
+-}
+diff --git a/app/InCallService/src/org/lineageos/mediatek/incallservice/OnLockedBootCompleteReceiver.java b/app/InCallService/src/org/lineageos/mediatek/incallservice/OnLockedBootCompleteReceiver.java
+deleted file mode 100644
+index 218f4371b1bb..000000000000
+--- a/app/InCallService/src/org/lineageos/mediatek/incallservice/OnLockedBootCompleteReceiver.java
++++ /dev/null
+@@ -1,19 +0,0 @@
+-package org.lineageos.mediatek.incallservice;
+-
+-import android.content.BroadcastReceiver;
+-import android.content.Intent;
+-import android.content.Context;
+-
+-import android.util.Log;
+-
+-public class OnLockedBootCompleteReceiver extends BroadcastReceiver {
+-    private static final String LOG_TAG = "MediatekInCallService";
+-
+-    @Override
+-    public void onReceive(final Context context, Intent intent) {
+-        Log.i(LOG_TAG, "onBoot");
+-
+-        Intent sIntent = new Intent(context, VolumeChangeService.class);
+-        context.startService(sIntent);
+-    }
+-}
+diff --git a/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeReceiver.java b/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeReceiver.java
+deleted file mode 100644
+index 98d1d39d493f..000000000000
+--- a/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeReceiver.java
++++ /dev/null
+@@ -1,41 +0,0 @@
+-package org.lineageos.mediatek.incallservice;
+-
+-import android.content.Intent;
+-import android.content.Context;
+-import android.content.BroadcastReceiver;
+-
+-import android.media.AudioManager;
+-import android.media.AudioSystem;
+-import android.media.AudioDeviceInfo;
+-
+-import android.util.Log;
+-
+-public class VolumeChangeReceiver extends BroadcastReceiver {
+-    public static final String LOG_TAG = "MediatekInCallService";
+-
+-    private AudioManager mAudioManager;
+-
+-    public VolumeChangeReceiver(AudioManager audioManager) {
+-        mAudioManager = audioManager;
+-    }
+-
+-    private void handleVolumeStateChange(Intent intent) {
+-        if (intent.getIntExtra(AudioManager.EXTRA_VOLUME_STREAM_TYPE, -1) == AudioManager.STREAM_VOICE_CALL) {
+-            AudioDeviceInfo callDevice = mAudioManager.getCommunicationDevice();
+-
+-            // Try to get volumeIndex
+-            int volumeIndex = intent.getIntExtra(AudioManager.EXTRA_VOLUME_STREAM_VALUE, -1);
+-            if (volumeIndex < 0) {
+-                Log.w(LOG_TAG, "Could not get volumeIndex!");
+-                return;
+-            }
+-
+-            GainUtils.setGainLevel(callDevice.getPort().type(), volumeIndex, AudioSystem.STREAM_VOICE_CALL);
+-        }
+-    }
+-
+-    @Override
+-    public void onReceive(Context context, Intent intent) {
+-            handleVolumeStateChange(intent);
+-    }
+-}
+diff --git a/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeService.java b/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeService.java
+deleted file mode 100644
+index 0870315e86d4..000000000000
+--- a/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeService.java
++++ /dev/null
+@@ -1,54 +0,0 @@
+-package org.lineageos.mediatek.incallservice;
+-
+-import android.media.AudioManager;
+-
+-import android.telephony.TelephonyManager;
+-import android.telephony.TelephonyCallback;
+-
+-import android.content.Intent;
+-import android.content.IntentFilter;
+-import android.content.Context;
+-import android.app.Service;
+-import android.os.IBinder;
+-
+-import android.util.Log;
+-
+-public class VolumeChangeService extends Service {
+-    public static final String LOG_TAG = "MediatekInCallService";
+-
+-    private Context mContext;
+-    private VolumeChangeReceiver mVolumeChangeReceiver;
+-    private CallStateListener mCallStateListener;
+-
+-    @Override
+-    public IBinder onBind(Intent intent) {
+-        return null;
+-    }
+-
+-    @Override
+-    public void onDestroy() {
+-        super.onDestroy();
+-    }
+-
+-    @Override
+-    public int onStartCommand(Intent intent, int flags, int startid) {
+-        mContext = this;
+-
+-        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+-        TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+-        mVolumeChangeReceiver = new VolumeChangeReceiver(audioManager);
+-        mCallStateListener = new CallStateListener(audioManager);
+-
+-        Log.i(LOG_TAG, "Service is starting...");
+-
+-        this.registerReceiver(mVolumeChangeReceiver,
+-                               new IntentFilter(AudioManager.VOLUME_CHANGED_ACTION));
+-
+-        telephonyManager.registerTelephonyCallback(getMainExecutor(), mCallStateListener);
+-
+-        // Restore gain levels on service start.
+-        GainUtils.setGainLevel(audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL));
+-
+-        return START_STICKY;
+-    }
+-}
+```
