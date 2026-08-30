@@ -923,3 +923,21 @@ index 21efeb776305..000000000000
 -
 ```
 
+Error/Change (No): 12
+What is the Error: module "android.hardware.biometrics.fingerprint@2.3-service.RMX2117" depends on undefined module "vendor.oplus.hardware.biometrics.fingerprint@2.1" because it cannot resolve the hardware/oplus namespace.
+The Fix: Added an imports list to the soong_namespace in device/realme/RMX2117/Android.bp to explicitly import hardware/oplus, hardware/mediatek, and vendor/mediatek/ims namespaces.
+```diff
+diff --git a/Android.bp b/Android.bp
+index 9515b2573200..bd42cc0e7fd2 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -1,2 +1,7 @@
+ soong_namespace {
++    imports: [
++        "hardware/oplus",
++        "hardware/mediatek",
++        "vendor/mediatek/ims",
++    ],
+ }
+```
+
