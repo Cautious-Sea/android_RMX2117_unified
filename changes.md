@@ -941,3 +941,33 @@ index 9515b2573200..bd42cc0e7fd2 100644
  }
 ```
 
+
+Error/Change (No): 13
+What is the Error: The build failed with `multiple rules generate out/target/product/RMX2117/symbols/system/framework/arm64/boot-mediatek-common.oat [-w dupbuild=err]`. This was because `mediatek-common` was added multiple times to `PRODUCT_BOOT_JARS` and `PRODUCT_PACKAGES`.
+The Fix: Removed redundant `mediatek-common` entries from `device/realme/RMX2117/device.mk` and `vendor/realme/RMX2117/RMX2117-vendor.mk` since it is already included via `hardware/mediatek/frameworks/mediatek-frameworks.mk`.
+```diff
+diff --git a/device.mk b/device.mk
+index 73d6e612f167..d6ec118a7714 100644
+--- a/device.mk
++++ b/device.mk
+@@ -126,7 +126,6 @@ PRODUCT_PACKAGES += \
+ # IMS
+ $(call inherit-product, vendor/mediatek/ims/ims.mk)
+ PRODUCT_BOOT_JARS += \
+-    mediatek-common \
+     mediatek-framework \
+     mediatek-ims-base \
+     mediatek-ims-common \
+diff --git a/RMX2117-vendor.mk b/RMX2117-vendor.mk
+index 4a9a24a1f355..47b7d4c3c0a0 100644
+--- a/RMX2117-vendor.mk
++++ b/RMX2117-vendor.mk
+@@ -36,7 +36,6 @@ PRODUCT_COPY_FILES += \
+     vendor/realme/RMX2117/proprietary/system_ext/lib64/vendor.mediatek.hardware.videotelephony@1.0.so:$(TARGET_COPY_OUT_SYSTEM_EXT)/lib64/vendor.mediatek.hardware.videotelephony@1.0.so
+ 
+ PRODUCT_PACKAGES += \
+-    mediatek-common \
+     mediatek-framework \
+     mediatek-gwsd \
+     mediatek-gwsdv2 \
+```
