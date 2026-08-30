@@ -28,5 +28,4 @@ cc_binary {
 vintf_fragment {
     name: "android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml",
     src: "android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml",
-    vendor: true,
 }
