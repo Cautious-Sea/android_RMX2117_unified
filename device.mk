@@ -58,6 +58,10 @@ PRODUCT_PACKAGES += \
     init.mt6853.rc \
     fstab.mt6853
 
+# Sensors
+PRODUCT_PACKAGES += \
+    sensors.oplus
+
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
     $(DEVICE_PATH)/overlay
@@ -133,3 +137,6 @@ PRODUCT_BOOT_JARS += \
 # MTK
 PRODUCT_PACKAGES += \
     MtkInCallService
+
+# Mediatek frameworks
+$(call inherit-product, hardware/mediatek/frameworks/mediatek-frameworks.mk)
