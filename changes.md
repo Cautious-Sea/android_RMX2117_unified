@@ -175,3 +175,22 @@ index 253579e..b9030b7 100644
 +# Mediatek frameworks
 +$(call inherit-product, hardware/mediatek/frameworks/mediatek-frameworks.mk)
 ```
+Error/Change (No): 5
+What is the Error: COMMON_LUNCH_CHOICES did not consistently follow the lineage_RMX2117-bp4a-* format.
+The Fix: Updated lunch choices to lineage_RMX2117-bp4a-user, lineage_RMX2117-bp4a-userdebug, and lineage_RMX2117-bp4a-eng in AndroidProducts.mk.
+```diff
+diff --git a/AndroidProducts.mk b/AndroidProducts.mk
+index 3df72f5..ad5cb3f 100644
+--- a/AndroidProducts.mk
++++ b/AndroidProducts.mk
+@@ -18,7 +18,6 @@ PRODUCT_MAKEFILES := \
+     $(LOCAL_DIR)/lineage_RMX2117.mk
+ 
+ COMMON_LUNCH_CHOICES := \
+-    lineage_RMX2117-user \
++    lineage_RMX2117-bp4a-user \
+     lineage_RMX2117-bp4a-userdebug \
+-    lineage_RMX2117-userdebug \
+-    lineage_RMX2117-eng
++    lineage_RMX2117-bp4a-eng
+```
