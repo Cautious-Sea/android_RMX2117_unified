@@ -98,3 +98,34 @@ index 26b277e..bbe559a 100644
  PRODUCT_BRAND := realme
  PRODUCT_MODEL := realme Narzo 30 Pro 5G
 ```
+Error/Change (No): 2
+What is the Error: SEPolicy.mk was mistakenly included via $(call inherit-product, ...) in device.mk, but it should be included directly in BoardConfig.mk like device_oplus_op6893 does.
+The Fix: Removed $(call inherit-product, device/mediatek/sepolicy_vndr/SEPolicy.mk) from device.mk and added include device/mediatek/sepolicy_vndr/SEPolicy.mk in BoardConfig.mk.
+```diff
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index 67ef959..e92a297 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -145,6 +145,7 @@ TARGET_FS_CONFIG_GEN := $(DEVICE_PATH)/config.fs
+ TARGET_USES_PREBUILT_VENDOR_SEPOLICY := true
+ TARGET_HAS_FUSEBLK_SEPOLICY_ON_VENDOR := true
+ BOARD_VENDOR_SEPOLICY_DIRS += device/mediatek/sepolicy_vndr
++include device/mediatek/sepolicy_vndr/SEPolicy.mk
+ SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS := $(DEVICE_PATH)/sepolicy/private
+ SELINUX_IGNORE_NEVERALLOWS := true
+ 
+diff --git a/device.mk b/device.mk
+index b863794..875704d 100644
+--- a/device.mk
++++ b/device.mk
+@@ -21,9 +21,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
+ # Inherit Vendor Blobs
+ $(call inherit-product, vendor/realme/RMX2117/RMX2117-vendor.mk)
+ 
+-# Inherit SEPolicy
+-$(call inherit-product, device/mediatek/sepolicy_vndr/SEPolicy.mk)
+-
+ # Enable updating of APEXes
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
+ 
+```
