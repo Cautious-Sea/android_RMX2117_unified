@@ -21,9 +21,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 # Inherit Vendor Blobs
 $(call inherit-product, vendor/realme/RMX2117/RMX2117-vendor.mk)
 
-# Inherit SEPolicy
-$(call inherit-product, device/mediatek/sepolicy_vndr/SEPolicy.mk)
-
 # Enable updating of APEXes
 $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
