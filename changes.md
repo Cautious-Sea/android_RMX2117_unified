@@ -483,3 +483,75 @@ index 0870315e86d4..000000000000
 -    }
 -}
 ```
+Error/Change (No): 7
+What is the Error: module "mediatek-common" variant "android_common": found in multiple namespaces and module "ImsService" variant "android_common": found in multiple namespaces
+The Fix: Removed duplicate mediatek-common and ImsService prebuilts from vendor/realme/RMX2117 since they are now provided by the common hardware/mediatek and vendor/mediatek/ims repositories.
+```diff
+diff --git a/proprietary-files.txt b/proprietary-files.txt
+index 8c8a4802a3eb..cfb4f414996f 100644
+--- a/proprietary-files.txt
++++ b/proprietary-files.txt
+@@ -29,7 +29,6 @@ lib64/libvt_avsync.so
+ lib64/libmtk_vt_wrapper.so
+ lib64/libvsim-adaptor-client.so
+ lib/libvsim-adaptor-client.so
+--framework/mediatek-common.jar
+ -framework/mediatek-framework.jar
+ framework/mediatek-gwsd.jar
+ framework/mediatek-gwsdv2.jar
+@@ -41,6 +40,3 @@ framework/mediatek-ims-extension-plugin.jar
+ -framework/mediatek-telephony-common.jar
+ system_ext/lib/vendor.mediatek.hardware.videotelephony@1.0.so
+ system_ext/lib64/vendor.mediatek.hardware.videotelephony@1.0.so
+-
+-# ImsService - from plato-user 14 UP1A.230620.001 V14.0.7.0.ULQMIXM release-keys
+--priv-app/ImsService/ImsService.apk|62e6a0c457812366623630dffef27b0bf5ca7fad
+diff --git a/Android.bp b/Android.bp
+index 4184bce..c85d48c 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -5,22 +5,7 @@
+ soong_namespace {
+ }
+ 
+-android_app_import {
+-	name: "ImsService",
+-	owner: "realme",
+-	apk: "proprietary/priv-app/ImsService/ImsService.apk",
+-	certificate: "platform",
+-	dex_preopt: {
+-		enabled: false,
+-	},
+-	privileged: true,
+-}
+ 
+-dex_import {
+-	name: "mediatek-common",
+-	owner: "realme",
+-	jars: ["proprietary/framework/mediatek-common.jar"],
+-}
+ 
+ dex_import {
+ 	name: "mediatek-framework",
+diff --git a/RMX2117-vendor.mk b/RMX2117-vendor.mk
+index da723e1..47b7d4c 100644
+--- a/RMX2117-vendor.mk
++++ b/RMX2117-vendor.mk
+@@ -36,8 +36,6 @@ PRODUCT_COPY_FILES += \
+     vendor/realme/RMX2117/proprietary/system_ext/lib64/vendor.mediatek.hardware.videotelephony@1.0.so:$(TARGET_COPY_OUT_SYSTEM_EXT)/lib64/vendor.mediatek.hardware.videotelephony@1.0.so
+ 
+ PRODUCT_PACKAGES += \
+-    ImsService \
+-    mediatek-common \
+     mediatek-framework \
+     mediatek-gwsd \
+     mediatek-gwsdv2 \
+diff --git a/proprietary/framework/mediatek-common.jar b/proprietary/framework/mediatek-common.jar
+deleted file mode 100644
+index efd4015..0000000
+Binary files a/proprietary/framework/mediatek-common.jar and /dev/null differ
+diff --git a/proprietary/priv-app/ImsService/ImsService.apk b/proprietary/priv-app/ImsService/ImsService.apk
+deleted file mode 100644
+index a95219d..0000000
+Binary files a/proprietary/priv-app/ImsService/ImsService.apk and /dev/null differ
+```
