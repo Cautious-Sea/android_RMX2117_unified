@@ -29,7 +29,6 @@ lib64/libvt_avsync.so
 lib64/libmtk_vt_wrapper.so
 lib64/libvsim-adaptor-client.so
 lib/libvsim-adaptor-client.so
--framework/mediatek-common.jar
 -framework/mediatek-framework.jar
 framework/mediatek-gwsd.jar
 framework/mediatek-gwsdv2.jar
@@ -41,6 +40,3 @@ framework/mediatek-ims-extension-plugin.jar
 -framework/mediatek-telephony-common.jar
 system_ext/lib/vendor.mediatek.hardware.videotelephony@1.0.so
 system_ext/lib64/vendor.mediatek.hardware.videotelephony@1.0.so
-
-# ImsService - from plato-user 14 UP1A.230620.001 V14.0.7.0.ULQMIXM release-keys
--priv-app/ImsService/ImsService.apk|62e6a0c457812366623630dffef27b0bf5ca7fad
