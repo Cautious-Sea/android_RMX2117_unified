@@ -605,3 +605,30 @@ index 5a6833e4b292..cad6ade06b72 100644
 +    vendor: true,
 +}
 ```
+
+Error/Change (No): 9
+What is the Error: module "ImsService" variant "android_common": found in multiple namespaces(vendor/mediatek/ims and vendor/realme/RMX2117) when including in system partition
+The Fix: Removed duplicate ImsService definition from vendor/realme/RMX2117 Android.bp and RMX2117-vendor.mk, and removed the apk from priv-app.
+```diff
+--- a/vendor/realme/RMX2117/Android.bp
++++ b/vendor/realme/RMX2117/Android.bp
+@@ -7,12 +7,2 @@
+ 
+-android_app_import {
+-	name: "ImsService",
+-	owner: "realme",
+-	apk: "proprietary/priv-app/ImsService/ImsService.apk",
+-	certificate: "platform",
+-	dex_preopt: {
+-		enabled: false,
+-	},
+-	privileged: true,
+-}
+ 
+--- a/vendor/realme/RMX2117/RMX2117-vendor.mk
++++ b/vendor/realme/RMX2117/RMX2117-vendor.mk
+@@ -38,3 +38,2 @@
+ PRODUCT_PACKAGES += \
+-    ImsService \
+     mediatek-common \
+```
