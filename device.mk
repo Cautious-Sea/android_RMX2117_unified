@@ -21,6 +21,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 # Inherit Vendor Blobs
 $(call inherit-product, vendor/realme/RMX2117/RMX2117-vendor.mk)
 
+# Inherit SEPolicy
+$(call inherit-product, device/mediatek/sepolicy_vndr/SEPolicy.mk)
+
 # Enable updating of APEXes
 $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
@@ -34,7 +37,10 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
-    $(DEVICE_PATH)
+    $(DEVICE_PATH) \
+    hardware/mediatek \
+    hardware/oplus \
+    vendor/mediatek/ims
 
 # Dynamic Partition
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
