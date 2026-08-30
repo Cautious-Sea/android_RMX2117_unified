@@ -979,3 +979,10 @@ The Fix: Removed the invalid `~/.cache/ccache` regular file and created the corr
 ```diff
 # No code diff, as this was a filesystem fix: rm ~/.cache/ccache && mkdir -p ~/.cache/ccache
 ```
+
+Error/Change (No): 15
+What is the Error: The kernel compilation failed with an `exec format error` because the clang-19 prebuilt binary (`clang.real`) was not a valid ELF executable. It was a Git LFS pointer text file because `git lfs` wasn't initialized before syncing the prebuilts repo.
+The Fix: Initialized Git LFS (`git lfs install`) and checked out the binary files (`git lfs checkout`) in `prebuilts/clang/host/linux-x86/clang-r530567`.
+```diff
+# No code diff, as this was a Git LFS repository initialization and checkout command to fetch the toolchain binaries.
+```
