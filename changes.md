@@ -129,3 +129,22 @@ index b863794..875704d 100644
  $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
  
 ```
+Error/Change (No): 3
+What is the Error: vendor/mediatek/ims was not included in the build system despite being in PRODUCT_SOONG_NAMESPACES.
+The Fix: Inherited vendor/mediatek/ims/ims.mk in device.mk under the IMS section.
+```diff
+diff --git a/device.mk b/device.mk
+index 875704d..253579e 100644
+--- a/device.mk
++++ b/device.mk
+@@ -116,8 +116,8 @@ PRODUCT_PACKAGES += \
+ PRODUCT_PACKAGES += \
+     libsuspend
+ 
+-
+ # IMS
++$(call inherit-product, vendor/mediatek/ims/ims.mk)
+ PRODUCT_BOOT_JARS += \
+     mediatek-common \
+     mediatek-framework \
+```
