@@ -555,3 +555,53 @@ deleted file mode 100644
 index a95219d..0000000
 Binary files a/proprietary/priv-app/ImsService/ImsService.apk and /dev/null differ
 ```
+
+Error/Change (No): 8
+What is the Error: build/soong/fsgen/Android.bp:41:1: module "lineage_RMX2117_generated_system_image" variant "android_common" (created by module "soong_filesystem_creator" variant "android_common"): vintf_fragments: Module android.hardware.biometrics.fingerprint@2.3-service.RMX2117 is referenced by soong-defined filesystem lineage_RMX2117_generated_system_image with property vintf_fragments(device/realme/RMX2117/fingerprint/android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml) in use. Use vintf_fragment_modules property instead.
+The Fix: Replaced `vintf_fragments` with `vintf_fragment_modules` and created `vintf_fragment` modules for `android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml` and `bluetooth_audio_system.xml` in their respective `Android.bp` files.
+```diff
+diff --git a/bluetooth/audio/hal/Android.bp b/bluetooth/audio/hal/Android.bp
+index 5bc57ed3baf6..28113c3af0df 100644
+--- a/bluetooth/audio/hal/Android.bp
++++ b/bluetooth/audio/hal/Android.bp
+@@ -1,6 +1,6 @@
+ cc_binary {
+     name: "android.hardware.bluetooth.audio-service-system",
+-    vintf_fragments: ["bluetooth_audio_system.xml"],
++    vintf_fragment_modules: ["bluetooth_audio_system.xml"],
+     init_rc: ["android.hardware.bluetooth.audio-service-system.rc"],
+     relative_install_path: "hw",
+     srcs: [
+@@ -38,3 +38,8 @@ cc_binary {
+         "android.hardware.audio@7.1-impl-system",
+     ],
+ }
++
++vintf_fragment {
++    name: "bluetooth_audio_system.xml",
++    src: "bluetooth_audio_system.xml",
++}
+diff --git a/fingerprint/Android.bp b/fingerprint/Android.bp
+index 5a6833e4b292..cad6ade06b72 100644
+--- a/fingerprint/Android.bp
++++ b/fingerprint/Android.bp
+@@ -2,7 +2,7 @@ cc_binary {
+     name: "android.hardware.biometrics.fingerprint@2.3-service.RMX2117",
+     defaults: ["hidl_defaults"],
+     init_rc: ["android.hardware.biometrics.fingerprint@2.3-service.RMX2117.rc"],
+-    vintf_fragments: ["android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml"],
++    vintf_fragment_modules: ["android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml"],
+     relative_install_path: "hw",
+     srcs: [
+         "BiometricsFingerprint.cpp",
+@@ -24,3 +24,9 @@ cc_binary {
+         "vendor.oplus.hardware.biometrics.fingerprint@2.1",
+     ],
+ }
++
++vintf_fragment {
++    name: "android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml",
++    src: "android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml",
++    vendor: true,
++}
+```
