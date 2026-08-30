@@ -607,7 +607,6 @@ index 5a6833e4b292..cad6ade06b72 100644
 ```
 
 Error/Change (No): 9
-<<<<<<< Updated upstream
 What is the Error: module "ImsService" variant "android_common": found in multiple namespaces(vendor/mediatek/ims and vendor/realme/RMX2117) when including in system partition
 The Fix: Removed duplicate ImsService definition from vendor/realme/RMX2117 Android.bp and RMX2117-vendor.mk, and removed the apk from priv-app.
 ```diff
@@ -632,7 +631,9 @@ The Fix: Removed duplicate ImsService definition from vendor/realme/RMX2117 Andr
  PRODUCT_PACKAGES += \
 -    ImsService \
      mediatek-common \
-=======
+```
+
+Error/Change (No): 10
 What is the Error: module "android.hardware.biometrics.fingerprint@2.3-service.RMX2117" variant "android_arm64_armv8-2a-dotprod": Module "android.hardware.biometrics.fingerprint@2.3-service.RMX2117"("system") and Vintf_fragment "android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml"("vendor") are installed to different partitions.
 The Fix: Removed `vendor: true` from the `vintf_fragment` for the fingerprint service to install it to the system partition, aligning with the GSI build where we do not build the vendor partition.
 ```diff
@@ -646,5 +647,4 @@ index cad6ade..8a1e2f3 100644
      src: "android.hardware.biometrics.fingerprint@2.3-service.RMX2117.xml",
 -    vendor: true,
  }
->>>>>>> Stashed changes
 ```
