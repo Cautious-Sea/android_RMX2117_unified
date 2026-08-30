@@ -119,8 +119,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libsuspend
 
-
 # IMS
+$(call inherit-product, vendor/mediatek/ims/ims.mk)
 PRODUCT_BOOT_JARS += \
     mediatek-common \
     mediatek-framework \
