@@ -9,5 +9,3 @@ attribute hal_mms_server;
 binder_call({appdomain -isolated_app}, hal_mms_server)
 binder_call(hal_mms_server, {appdomain -isolated_app})
 
-
-allow { appdomain -isolated_app }  mtk_hal_mms_hwservice:hwservice_manager find;
