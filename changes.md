@@ -1024,3 +1024,25 @@ The Fix: Removed duplicate mtk_hal_mms and mtk_hal_mms_hwservice type declaratio
  allow { appdomain -isolated_app }  mtk_hal_mms_hwservice:hwservice_manager find;
 ```
 
+Error/Change (No): 18
+What is the Error: device/realme/RMX2117/sepolicy/private/vtservice.te:1:ERROR 'Duplicate declaration of type' at token ';' on line 90419: type vtservice, coredomain;
+The Fix: Removed duplicate vtservice, vtservice_exec, and vtservice_service declarations. Converted the vtservice type declaration to a typeattribute to preserve the coredomain property.
+```diff
+--- a/device/realme/RMX2117/sepolicy/private/vtservice.te
++++ b/device/realme/RMX2117/sepolicy/private/vtservice.te
+@@ -1,5 +1,4 @@
+-type vtservice, coredomain;
+-type vtservice_exec, exec_type, file_type, system_file_type;
++typeattribute vtservice coredomain;
+ 
+ init_daemon_domain(vtservice);
+ binder_use(vtservice)
+--- a/device/realme/RMX2117/sepolicy/private/service.te
++++ b/device/realme/RMX2117/sepolicy/private/service.te
+@@ -1,5 +1,4 @@
+ type mwis_service, service_manager_type;
+ type mtk_ims_service, service_manager_type;
+ type wfo_service, service_manager_type;
+-type vtservice_service, service_manager_type;
+```
+
