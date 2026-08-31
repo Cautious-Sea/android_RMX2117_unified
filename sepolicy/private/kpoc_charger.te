@@ -1,3 +1,4 @@
+type kpoc_charger_exec, system_file_type, exec_type, file_type;
 
 # Move to system partition
 typeattribute kpoc_charger coredomain;
