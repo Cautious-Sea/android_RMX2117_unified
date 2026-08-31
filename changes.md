@@ -1046,3 +1046,16 @@ The Fix: Removed duplicate vtservice, vtservice_exec, and vtservice_service decl
 -type vtservice_service, service_manager_type;
 ```
 
+Error/Change (No): 19
+What is the Error: device/realme/RMX2117/sepolicy/private/hal_fingerprint_oplus.te:4:ERROR 'unknown type proc_tp' at token ';' on line 90095
+The Fix: Added missing type declaration for proc_tp in file.te since it is referenced by hal_fingerprint_oplus.te, genfs_contexts, hal_power.te, and system_app.te.
+```diff
+--- a/device/realme/RMX2117/sepolicy/private/file.te
++++ b/device/realme/RMX2117/sepolicy/private/file.te
+@@ -3,4 +3,5 @@
+ type sysfs_disp_hbm, sysfs_type, fs_type;
+ type sysfs_graphics_ffl, sysfs_type, fs_type;
+ type sysfs_fps, sysfs_type, fs_type;
++type proc_tp, fs_type, proc_type;
+```
+
