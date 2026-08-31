@@ -4,3 +4,4 @@ type sysfs_disp_hbm, sysfs_type, fs_type;
 type sysfs_graphics_ffl, sysfs_type, fs_type;
 type sysfs_fps, sysfs_type, fs_type;
 type proc_tp, fs_type, proc_type;
+type sysfs_fod, sysfs_type, fs_type;
