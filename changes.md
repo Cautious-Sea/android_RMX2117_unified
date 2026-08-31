@@ -1000,3 +1000,27 @@ The Fix: Removed duplicate kpoc_charger and kpoc_charger_exec type declarations 
  init_daemon_domain(kpoc_charger)
 ```
 
+Error/Change (No): 17
+What is the Error: device/realme/RMX2117/sepolicy/private/mtk_hal_mms.te:2:ERROR 'Duplicate declaration of type' at token ';' on line 90223: type mtk_hal_mms, domain;
+The Fix: Removed duplicate mtk_hal_mms and mtk_hal_mms_hwservice type declarations from the device tree since they are provided by the MediaTek vendor sepolicy.
+```diff
+--- a/device/realme/RMX2117/sepolicy/private/mtk_hal_mms.te
++++ b/device/realme/RMX2117/sepolicy/private/mtk_hal_mms.te
+@@ -1,5 +1,4 @@
+-type mtk_hal_mms, domain;
+-type mtk_hal_mms_hwservice, hwservice_manager_type;
++
+ 
+ # Allow untrusted_app_31 to add and find mtk_hal_mms_hwservice
+ allow { appdomain -isolated_app } mtk_hal_mms_hwservice:hwservice_manager find;
+--- a/device/realme/RMX2117/sepolicy/private/mtk.te
++++ b/device/realme/RMX2117/sepolicy/private/mtk.te
+@@ -9,6 +9,6 @@
+ binder_call({appdomain -isolated_app}, hal_mms_server)
+ binder_call(hal_mms_server, {appdomain -isolated_app})
+ 
+-type mtk_hal_mms_hwservice, hwservice_manager_type;
++
+ allow { appdomain -isolated_app }  mtk_hal_mms_hwservice:hwservice_manager find;
+```
+
