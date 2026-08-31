@@ -1115,4 +1115,17 @@ The Fix: Restored the declarations for kpoc_charger_exec, vtservice_exec, and vt
 +-
 +-# Receive and use open file descriptors inherited from gmscore
 +-allow mtk_hal_mms gmscore_app:fd use;
-
++```
++
++Error/Change (No): 22
++What is the Error: device/realme/RMX2117/sepolicy/private/system_app.te:13:ERROR 'unknown type sysfs_fod'
++The Fix: Added missing type declaration for sysfs_fod in file.te since it is referenced by system_app.te.
++```diff
++--- a/device/realme/RMX2117/sepolicy/private/file.te
+++++ b/device/realme/RMX2117/sepolicy/private/file.te
++@@ -4,4 +4,5 @@
++ type sysfs_graphics_ffl, sysfs_type, fs_type;
++ type sysfs_fps, sysfs_type, fs_type;
++ type proc_tp, fs_type, proc_type;
+++type sysfs_fod, sysfs_type, fs_type;
++```
