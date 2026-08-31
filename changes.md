@@ -986,3 +986,17 @@ The Fix: Initialized Git LFS (`git lfs install`) and checked out the binary file
 ```diff
 # No code diff, as this was a Git LFS repository initialization and checkout command to fetch the toolchain binaries.
 ```
+
+Error/Change (No): 16
+What is the Error: device/realme/RMX2117/sepolicy/private/kpoc_charger.te:1:ERROR 'Duplicate declaration of type' at token ';' on line 90116: type kpoc_charger, domain;
+The Fix: Removed duplicate kpoc_charger and kpoc_charger_exec type declarations from the device tree since they are provided by the MediaTek vendor sepolicy.
+```diff
+@@ -1,5 +1,4 @@
+-type kpoc_charger, domain;
+-type kpoc_charger_exec, system_file_type, exec_type, file_type;
++
+ # Move to system partition
+ typeattribute kpoc_charger coredomain;
+ init_daemon_domain(kpoc_charger)
+```
+
