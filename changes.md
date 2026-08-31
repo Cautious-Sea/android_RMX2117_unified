@@ -1086,4 +1086,33 @@ The Fix: Restored the declarations for kpoc_charger_exec, vtservice_exec, and vt
  type wfo_service, service_manager_type;
 -
 +type vtservice_service, service_manager_type;
-```
++```
++
++Error/Change (No): 21
++What is the Error: device/realme/RMX2117/sepolicy/private/mtk.te:13:ERROR 'unknown type mtk_hal_mms_hwservice'
++The Fix: Removed the references to mtk_hal_mms and mtk_hal_mms_hwservice from system_ext sepolicy since these are vendor-private types. Giving appdomain direct access to vendor HALs is a Treble violation anyway, so removing them is the correct fix.
++```diff
++--- a/device/realme/RMX2117/sepolicy/private/mtk.te
+++++ b/device/realme/RMX2117/sepolicy/private/mtk.te
++@@ -11,4 +11,3 @@
++ 
++-allow { appdomain -isolated_app }  mtk_hal_mms_hwservice:hwservice_manager find;
++--- a/device/realme/RMX2117/sepolicy/private/mtk_hal_mms.te (deleted)
+++++ /dev/null
++@@ -1,18 +0,0 @@
++-# Allow untrusted_app_31 to add and find mtk_hal_mms_hwservice
++-allow { appdomain -isolated_app } mtk_hal_mms_hwservice:hwservice_manager find;
++-
++-# Allow binder calls from untrusted_app_31 to mtk_hal_mms and vice versa
++-binder_call(untrusted_app_31, mtk_hal_mms)
++-binder_call(mtk_hal_mms, untrusted_app_31)
++-# Allow gmscore_app to add and find mtk_hal_mms_hwservice
++-add_hwservice(gmscore_app, mtk_hal_mms_hwservice)
++-
++-# Allow binder calls from gmscore_app to mtk_hal_mms and vice versa
++-binder_call(gmscore_app, mtk_hal_mms)
++-binder_call(mtk_hal_mms, gmscore_app)
++-
++-# Receive and use open file descriptors inherited from gmscore
++-allow mtk_hal_mms gmscore_app:fd use;
+
